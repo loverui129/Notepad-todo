@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>My Task List</title>
+  <style>
+    /* Body styles */
+    body {
+      font-family: 'Courier New', monospace;
+      background: repeating-linear-gradient(
+        to bottom,
+        #fdfdfd 0px,
+        #fdfdfd 24px,
+        #e0e0e0 25px
+      );
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      color: #4B0082;
+      border-bottom: 2px dashed #ccc;
+      padding-bottom: 10px;
+      margin-bottom: 30px;
+    }
+
+    input[type="text"], select, button {
+      padding: 6px;
+      margin-right: 10px;
+      font-size: 1em;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      background: #fff;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-left: 5px solid #4B0082;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    strong {
+      margin-right: 10px;
+      font-size: 1.2em;
+    }
+    
+
+    /* Priority styles */
+    .priority-high {
+      color: red;
+      font-style: italic;
+      margin-left: 10px;
+    }
+    .priority-medium {
+      color: orange;
+      font-style: italic;
+      margin-left: 10px;
+    }
+    .priority-low {
+      color: rgb(0, 255, 42);
+      font-style: italic;
+      margin-left: 10px;
+    }
+
+    /* Timestamp style */
+    .timestamp {
+     color: pink;
+     font-size: 0.9em;
+     margin-left: 10px;
+     font-style: italic;
+    }
+
+    /* Toggle Switch Styles */
+    .switch {
+     position: relative;
+     display: inline-block;
+     width: 45px;
+     height: 24px;
+     margin-left: 10px;
+     vertical-align: middle;
+    }
+
+    .switch input {
+     opacity: 0;
+     width: 0;
+     height: 0;
+    }
+
+    .slider {
+     position: absolute;
+     cursor: pointer;
+     top: 0; left: 0;
+     right: 0; bottom: 0;
+     background-color: #ccc;
+     transition: 0.4s;
+     border-radius: 24px;
+    }
+
+    .slider:before {
+     position: absolute;
+     content: "";
+     height: 18px;
+     width: 18px;
+     left: 3px;
+     bottom: 3px;
+     background-color: white;
+     transition: 0.4s;
+     border-radius: 50%;
+    }
+
+    .switch input:checked + .slider {
+     background-color: #4CAF50;
+    }
+
+    .switch input:checked + .slider:before {
+     transform: translateX(21px);
+    }
+  </style>
+</head>
+<body>
+  <h1>My Tasks</h1>
+
+  
+  
+  <!-- Create Task Form -->
+  <form method="POST" action="/">
+    <input type="text" name="title" placeholder="Enter new task" required>
+    <select name="priority">
+      <option value="High">High</option>
+      <option value="Medium">Medium</option>
+      <option value="Low" selected>Low</option>
+    </select>
+    <button type="submit">Add Task</button>
+  </form>
+
+  <ul>
+    {% for task in tasks %}
+      <li>
+        
+        <!-- Task title -->
+        <strong>{{ task.title }}</strong>
+
+        <!-- Priority -->
+        <span class="priority-{{ task.priority | lower }}">
+          ({{ task.priority }})
+        </span>
+
+        <!-- Update Priority Form -->
+        <form method="POST" action="/update_priority/{{ task.id }}" style="display:inline;">
+            <select name="priority" onchange="this.form.submit()">
+              <option value="High" {% if task.priority == 'High' %}selected{% endif %}>High</option>
+              <option value="Medium" {% if task.priority == 'Medium' %}selected{% endif %}>Medium</option>
+              <option value="Low" {% if task.priority == 'Low' %}selected{% endif %}>Low</option>
+            </select>
+        </form>
+  
+
+        <!-- Toggle Switch Form -->
+        <form method="POST" action="/toggle/{{ task.id }}" style="display: inline;">
+            <label class="switch">
+                <input type="checkbox" onchange="this.form.submit()" {% if task.done %}checked{% endif %}>
+                <span class="slider round"></span>
+            </label>
+            
+            <span style="margin-left: 8px;">
+                {% if task.done %}
+                  ✅ <span style="color: green;">Done</span>
+                {% else %}
+                  ❌ <span style="color: red;">Not Done</span>
+                {% endif %}
+            </span>
+        
+        </form>
+        
+        
+        <!-- Timestamp -->
+        <span class="timestamp">
+          {{ task.created_at.strftime('%Y-%m-%d %H:%M') }}
+        </span>
+
+        <!-- Delete Button -->
+        <form method="POST" action="/delete/{{ task.id }}" style="display:inline;">
+          <button type="submit" style="border:none; background:none; font-size:1em;">
+            🗑
+          </button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+</body>
+</html>
