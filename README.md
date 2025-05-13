@@ -16,6 +16,7 @@ A simple Flask-based task management app with a nostalgic notepad look. Users ca
 - Flask
 - SQLite
 - HTML + CSS (inline Jinja2 templates)
+- Docker
 
 ## 📦 How to Run
 
@@ -24,5 +25,27 @@ A simple Flask-based task management app with a nostalgic notepad look. Users ca
 git clone https://github.com/loverui129/Notepad-todo.git
 cd Notepad-todo
 
+# Install dependencies
+pip install -r requirements.txt
+
 # Run the app
 python app_SQL.py
+Then open your browser and visit: http://localhost:5000
+
+
+
+
+🐳 Docker Deployment
+You can also run this app using Docker:
+# Build the Docker image
+docker build -t notepad-todo .
+
+# Run the container (port 5050 can be adjusted if needed)
+docker run -p 5050:5000 notepad-todo
+
+Or use Docker Compose:
+docker compose up
+Then visit: http://localhost:5050
+
+
+
